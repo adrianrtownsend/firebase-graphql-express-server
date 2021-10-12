@@ -1,0 +1,87 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Functions ========================================
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isThisAuth(authId, thisId) {
+      return authId == thisId;
+    }
+
+    function isThisRole(role) {
+      return request.auth.token.role == role;
+    }
+
+    function isClassTeacher(teacherID) {
+      let thisId = get(/databases/$(database)/documents/teachers/$(teacherID)).ownerUID;
+      return thisId == request.auth.uid;
+    }
+
+    //function isAssignmentClassTeacher() {
+
+    //}
+
+    //function isStudentPendingRegistration() {
+
+    //}
+
+    //function isStudentRegistered() {
+
+    //}
+
+    // Restrict field operations =================================
+
+    // Students Document
+    // Teachers - [read]
+    // Students - [read, write(if self)]
+    match /students/{studentID} {
+      allow create: if isAuth() && isThisRole('student') && isThisAuth(request.auth.uid, request.resource.data.ownerUID);
+      allow read: if isAuth();
+      allow update: if isThisAuth(request.auth.uid, resource.data.ownerUID) && isThisAuth(request.auth.uid, request.resource.data.ownerUID);
+      allow delete: if isThisAuth(request.auth.uid, resource.data.ownerUID);
+    }
+
+    // Teachers Document
+    // Teachers - [read, write(if self)]
+    // Students - [read]
+    match /teachers/{teacherID} {
+      allow create: if isAuth() && isThisRole('teacher') && isThisAuth(request.auth.uid, request.resource.data.ownerUID);
+      allow read: if isAuth();
+      allow update: if isThisAuth(request.auth.uid, resource.data.ownerUID) && isThisAuth(request.auth.uid, request.resource.data.ownerUID);
+      allow delete: if isThisAuth(request.auth.uid,  resource.data.ownerUID);
+    }
+
+    // Classes Document
+    // Teachers - [read, write(if self)]
+    // Students - [read]
+    match /classes/{classID} {
+      allow create: if isAuth() && isThisRole('teacher');
+      allow read: if isAuth();
+      allow update: if isClassTeacher(get(/databases/$(database)/documents/classes/$(classID)).data.teacher.teacherID); // need to lookup teacher and check if owner
+      // allow delete: if isClassTeacher(get(/databases/$(database)/documents/classes/$(classID)).data.teacher.teacherID); // need to lookup teacher and check if owner
+
+      // Teacher - [read, write(if class.teacher)]
+      // Student - [read(if student in class and accepted)]
+      //match /assignments/{assignmentID} {
+        //allow create: ;
+        //allow read: ;
+        //allow update: ;
+        //allow delete: ;
+      //}
+
+      // Teacher - [*(if teacher of class)]
+      // Student - [read(if self || accepted), create(if self && only student register info), delete(if self)]
+      //match /students/{studentID} {
+        //allow create: ;
+        //allow read: ;
+        //allow update: ;
+        //alow delete: ;
+      //}
+    }
+
+  }
+}
