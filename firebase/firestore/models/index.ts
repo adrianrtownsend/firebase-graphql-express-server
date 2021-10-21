@@ -57,7 +57,7 @@ interface Teacher {
   ownerUID?: string
 }
 
-interface Student {
+export interface Student {
   id: string
   name: PersonName
   username: string
@@ -67,7 +67,7 @@ interface Student {
   ownerUID?: string
 }
 
-interface Assignment {
+export interface Assignment {
   code: string
   dueDate: string
   name: ObjectName
@@ -75,7 +75,7 @@ interface Assignment {
   status: AssignmentStatus
 }
 
-interface ClassStudent {
+export interface ClassStudent {
   name: PersonName
   studentID: string
   status: ClassStudentStatus
@@ -83,7 +83,7 @@ interface ClassStudent {
   grades?: [Grade]
 }
 
-interface ClassTeacher {
+export interface ClassTeacher {
   name: PersonName
   teacherID: string
 }
@@ -99,10 +99,4 @@ interface Class {
     requests: number
     size: number
   }
-}
-
-interface School {
-  classes?: [Class]
-  students?: [Student]
-  teachers?: [Teacher]
 }
