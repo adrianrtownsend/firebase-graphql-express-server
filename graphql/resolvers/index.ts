@@ -2,15 +2,18 @@
 
 import { createDocument } from "../../firebase/firestore/controllers"
 import { students, teachers, classes } from "../typedefs/testData"
-
+import * as db from '../../firebase/firestore/controllers'
 
 // schema. This resolver retrieves books from the "books" array above.
 const resolvers = {
   Query: {
     listStudents: () => {
-      return students
+      //return students
+      return db.listDocuments({collection: 'students'})
     },
-    getStudent: () => {students},
+    getStudent: () => {
+      return db.getDocumentByID({collection: 'students', id: '1' })
+    },
     listTeachers: () => teachers,
     getTeacher: () => {teachers},
     listClasses: () => classes,

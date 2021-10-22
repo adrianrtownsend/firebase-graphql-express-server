@@ -1,6 +1,6 @@
 import firestore from '../index'
 
-import '../../types'
+import '../../../types'
 
 
 const db = firestore
@@ -10,8 +10,8 @@ interface ICreateDocumentData {
 }
 
 interface ICreateDocument {
-  collection: string;
-  data: ICreateDocumentData;
+  collection: any
+  data: ICreateDocumentData
 }
 
 interface IListDocuments {
@@ -23,10 +23,36 @@ interface IListDocumentsByFilter {
   filters: Array<string>
 }
 
-interface IGetDocumentByIdReq {
+interface IGetDocumentById {
   collection: string
   id: string
 }
+
+interface IGetDocumentByFilter {
+  collection: string
+  filters: Array<string>
+}
+
+interface IUpdateDocumentData {
+  name: string;
+}
+
+interface IUpdateDocument {
+  collection: any
+  id: string
+  data: IUpdateDocumentData
+}
+
+interface IDeleteDocument {
+  collection: any
+  id: string
+}
+
+interface IDeleteDocuments {
+  collection: any
+  ids: Array<string>
+}
+
 
 export const createDocument = async ({collection, data}: ICreateDocument) => {
   try {
@@ -39,9 +65,13 @@ export const createDocument = async ({collection, data}: ICreateDocument) => {
 }
 
 export const listDocuments = async ({collection}: IListDocuments) => {
-  const docRef = db.collection(collection)
-  const snapshot = await docRef.get()
-  return snapshot
+  try {
+    const docRef = db.collection(collection)
+    const snapshot = await docRef.get()
+    return snapshot
+  } catch (error) {
+    throw new Error("error")
+  }
 }
 
 export const listDocumentsByFilter = async ({collection, filters}: IListDocumentsByFilter) => {
@@ -50,11 +80,10 @@ export const listDocumentsByFilter = async ({collection, filters}: IListDocument
     return docRef
   } catch (error) {
     throw new Error("error")
-    
   }
 }
 
-export const getDocumentByID = async ({collection, id}: IGetDocumentByIdReq)  => {
+export const getDocumentByID = async ({collection, id}: IGetDocumentById)  => {
   const docRef = await db.collection(collection).doc(id).get()
   if(!docRef.exists) {
     throw new Error("None")
@@ -63,10 +92,10 @@ export const getDocumentByID = async ({collection, id}: IGetDocumentByIdReq)  =>
   }
 }
 
-export const getDocumentByFilter = async ({collection, filters}) => {''}
+export const getDocumentByFilter = async ({collection, filters}: IGetDocumentByFilter) => {''}
 
-export const updateDocument = async ({collection, id, data}) => {''}
+export const updateDocument = async ({collection, id, data}: IUpdateDocument) => {''}
 
-export const deleteDocument = async ({collection, id}) => {''}
+export const deleteDocument = async ({collection, id}: IDeleteDocument) => {''}
 
-export const deleteDocuments = async ({collection, ids}) => {''}
+export const deleteDocuments = async ({collection, ids}: IDeleteDocuments) => {''}

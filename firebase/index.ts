@@ -7,6 +7,6 @@ export const firebase = admin.initializeApp({
   databaseURL: emulator.databaseUrl
 })
 
-console.log('firebase initialized: ', firebase.name) 
+console.log('firebase initialized: ', firebase) 
 
 export default firebase
