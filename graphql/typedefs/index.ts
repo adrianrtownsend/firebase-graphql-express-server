@@ -63,6 +63,11 @@ const typeDefs = gql`
     ownerUID: String
   }
 
+  type TeacherResolver {
+    message: String
+    data: Teacher
+  }
+
   type Student {
     id: ID
     name: PersonName
@@ -71,6 +76,11 @@ const typeDefs = gql`
     classes: [String]
     grades: [String]
     ownerUID: String
+  }
+
+  type StudentResolver {
+    message: String
+    data: Student
   }
 
   type ClassTeacher {
@@ -217,40 +227,42 @@ const typeDefs = gql`
     id: ID
   }
 
+  
+
   # The "Query" type is special: it lists all of the available queries that
   # clients can execute, along with the return type for each. In this
   # case, the "books" query returns an array of zero or more Books (defined above).
   type Query {
     books: [Book]
-    listStudents: [Student]
-    getStudent(id: inputID!): Student
+    listStudents: StudentResolver
+    getStudent(id: inputID!): StudentResolver
     listTeachers: [Teacher]
-    getTeacher(id: inputID!): Teacher
+    getTeacher(id: inputID!): TeacherResolver
     listClasses: [Class]
     getClass(id: inputID!): Class
     listAssignments: [Student]
-    getAssignment(id: inputID!): Student
+    getAssignment(id: inputID!): StudentResolver
     listGrades: [Student]
-    getGrade(id: inputID!): Student
+    getGrade(id: inputID!): StudentResolver
   }
 
   # type Mutation
   type Mutation {
-    createStudent(input: createStudentInput!): Student
-    updateStudent(id: inputID!, input: updateStudentInput!): Student
-    deleteStudent(id: inputID!): Student
-    createTeacher(input: createTeacherInput!): Teacher
-    updateTeacher: Teacher
-    deleteTeacher(id: inputID!): Teacher
+    createStudent(input: createStudentInput!): StudentResolver
+    updateStudent(id: inputID!, input: updateStudentInput!): StudentResolver
+    deleteStudent(id: inputID!): StudentResolver
+    createTeacher(input: createTeacherInput!): TeacherResolver
+    updateTeacher: TeacherResolver
+    deleteTeacher(id: inputID!): TeacherResolver
     createClass:Class
     updateClass(id: inputID!, input: updateClassInput!): Class
     deleteClass: Class
-    createAssignment: Student
-    updateAssignment: Student
-    deleteAssignment(id: inputID!): Student
-    createGrade: Student
-    updateGrade: Student
-    deleteGrade(id: inputID!): Student
+    createAssignment: StudentResolver
+    updateAssignment: StudentResolver
+    deleteAssignment(id: inputID!): StudentResolver
+    createGrade: StudentResolver
+    updateGrade: StudentResolver
+    deleteGrade(id: inputID!): StudentResolver
   }
 
   # type Subscription
